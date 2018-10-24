@@ -1,0 +1,48 @@
+#lang plai-typed
+
+
+(define-type ArithC
+  [numC (n : number)]
+  [plusC (l : ArithC) (r : ArithC)]
+  [multC (l : ArithC) (r : ArithC)])
+
+(define (parse [s : s-expression]) : ArithC
+  (cond
+    [(s-exp-number? s) (numC (s-exp->number s))]
+    [(s-exp-list? s)
+     (let ([s1 (s-exp->list s)])
+       (case (s-exp->symbol (first s1))
+         [(+) (plusC (parse (second s1)) (parse (third s1)))]
+         [(*) (multC (parse (second s1)) (parse (third s1)))]))]
+    [else (error 'parse "invalid list input")]))
+
+
+(define (interp [a : ArithC]) : number
+  (type-case ArithC a
+    [numC (n) n]
+    [plusC (l r) (+ (interp l) (interp r))]
+    [multC (l r) (* (interp l) (interp r))]))
+
+(define-type ArithS
+  [numS (n : number)]
+  [plusS (l : ArithS) (r : ArithS)]
+  [bminusS (l : ArithS) (r : ArithS)]
+  [multS (l : ArithS) (r : ArithS)])
+
+
+
+
+
+(interp (parse '(+ (+ 2 3) (* 2 3))))
+
+
+
+
+
+
+
+
+
+
+
+
